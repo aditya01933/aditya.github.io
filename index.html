@@ -491,6 +491,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+        // Quiz functionality
         function showResult(element, isCorrect) {
             const resultDiv = document.getElementById('quiz-result');
             const allOptions = document.querySelectorAll('.quiz-option');
@@ -513,9 +514,10 @@
             resultDiv.style.display = 'block';
         }
 
+        // Cost calculator functionality
         function updateCost() {
             const slider = document.getElementById('sizeSlider');
-            const value = slider.value;
+            const value = parseInt(slider.value);
             const sizeLabel = document.getElementById('modelSize');
             const costResult = document.getElementById('costResult');
             
@@ -525,9 +527,16 @@
                 3: { size: 'Large (GPT-4 scale)', cost: '$78-100 million' }
             };
             
-            sizeLabel.textContent = costs[value].size;
-            costResult.innerHTML = `Cost to delete one person's data: <strong>${costs[value].cost}</strong>`;
+            if (sizeLabel && costResult && costs[value]) {
+                sizeLabel.textContent = costs[value].size;
+                costResult.innerHTML = `Cost to delete one person's data: <strong>${costs[value].cost}</strong>`;
+            }
         }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCost();
+        });
     </script>
 </body>
 </html>
