@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slopsquatting: AI's Predictable Security Nightmare</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e8e8e8;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            color: #f0f0f0;
+            font-weight: 300;
+        }
+
+        .content {
+            padding: 50px 40px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            color: rgba(255,255,255,0.9);
+            margin-top: 10px;
+        }
+
+        .interactive-box {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .interactive-box h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .model-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .model-card {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .model-card:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+            transform: scale(1.02);
+        }
+
+        .model-card.selected {
+            background: rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .code-block {
+            background: rgba(0,0,0,0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: #9ef0f0;
+            font-size: 0.95em;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+            margin: 40px 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-left: 2px solid #667eea;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #f5576c;
+            box-shadow: 0 0 10px #f5576c;
+        }
+
+        .timeline-date {
+            color: #f093fb;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .alert-box {
+            background: rgba(245, 87, 108, 0.2);
+            border: 2px solid #f5576c;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .alert-box.success {
+            background: rgba(72, 219, 251, 0.2);
+            border-color: #48dbfb;
+        }
+
+        .alert-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+            margin: 10px 5px;
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-5px);
+        }
+
+        .card h4 {
+            color: #f093fb;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        h2 {
+            color: #667eea;
+            margin: 40px 0 20px 0;
+            font-size: 2em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #f093fb;
+            margin: 30px 0 15px 0;
+            font-size: 1.5em;
+        }
+
+        p {
+            margin: 15px 0;
+            color: #d0d0d0;
+        }
+
+        .highlight {
+            color: #f5576c;
+            font-weight: bold;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #9ef0f0;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0,0,0,0.3);
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            color: white;
+            font-size: 1em;
+        }
+
+        .result-box {
+            background: rgba(102, 126, 234, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .tool-status {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+
+        .status-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .status-icon.red {
+            background: #f5576c;
+        }
+
+        .status-icon.green {
+            background: #48dbfb;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .stat-number {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎭 Slopsquatting: The Supply Chain Attack Hiding in Plain Sight</h1>
+            <p class="subtitle">Your AI assistant just suggested a package that doesn't exist. Someone's about to register it.</p>
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
+                <p style="font-size: 0.95em; opacity: 0.9;">
+                    By <strong>Aditya Tiwari</strong> • 
+                    <a href="https://www.linkedin.com/in/aditya01933" target="_blank" style="color: #48dbfb; text-decoration: none; font-weight: 500;">LinkedIn</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="stat-box">
+                <div class="stat-number">205,474</div>
+                <div class="stat-label">Phantom packages AI assistants reliably hallucinate</div>
+            </div>
+
+            <div class="stat-box" style="background: linear-gradient(135deg, #f5576c 0%, #764ba2 100%); margin-top: 20px;">
+                <div class="stat-number">43%</div>
+                <div class="stat-label">Repeat across identical prompts (perfectly predictable for attackers)</div>
+            </div>
+
+            <div class="alert-box">
+                <div class="alert-icon">⚠️</div>
+                <p><strong>The mechanism is brutal:</strong> When researchers ran the same prompt 10 times through the same AI model, 43% of hallucinated packages appeared in <em>every single run</em>. This isn't random noise—it's <span class="highlight">systematic, predictable behavior</span> that attackers can exploit at scale.</p>
+                <p>Run a prompt. Get a phantom package name. Register it with malware. Wait for developers to install it. Repeat 205,474 times.</p>
+            </div>
+
+            <h2>🧪 Interactive: Calculate Your Hallucination Risk</h2>
+            
+            <div class="interactive-box">
+                <h3>How many phantom packages is your AI generating?</h3>
+                <p>Select your AI coding assistant to see the hallucination risk:</p>
+                
+                <div class="model-selector">
+                    <div class="model-card" onclick="selectModel('gpt4', 5.2)">
+                        <h4>GPT-4 / Cursor</h4>
+                        <p style="font-size: 2em; margin: 10px 0;">5.2%</p>
+                        <p style="font-size: 0.9em; opacity: 0.8;">Commercial AI (lowest risk)</p>
+                    </div>
+                    <div class="model-card" onclick="selectModel('claude', 5.2)">
+                        <h4>Claude / Windsurf</h4>
+                        <p style="font-size: 2em; margin: 10px 0;">5.2%</p>
+                        <p style="font-size: 0.9em; opacity: 0.8;">Commercial AI</p>
+                    </div>
+                    <div class="model-card" onclick="selectModel('copilot', 5.2)">
+                        <h4>GitHub Copilot</h4>
+                        <p style="font-size: 2em; margin: 10px 0;">5.2%</p>
+                        <p style="font-size: 0.9em; opacity: 0.8;">Commercial AI</p>
+                    </div>
+                    <div class="model-card" onclick="selectModel('opensource', 21.7)">
+                        <h4>Open Source LLMs</h4>
+                        <p style="font-size: 2em; margin: 10px 0;">21.7%</p>
+                        <p style="font-size: 0.9em; opacity: 0.8;">CodeLlama, DeepSeek, Mistral</p>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>How many AI-generated dependency suggestions per week?</label>
+                    <input type="number" id="weeklyDeps" value="50" min="1" oninput="calculateRisk()">
+                </div>
+
+                <div class="result-box" id="riskResult" style="display:none;">
+                    <h4>Your Weekly Hallucination Risk:</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="riskBar" style="width: 0%;">
+                            <span id="riskPercent"></span>
+                        </div>
+                    </div>
+                    <p id="riskExplanation"></p>
+                    <p style="margin-top: 15px; color: #f5576c;"><strong>Translation:</strong> <span id="phantomCount"></span> phantom packages per week that attackers could register with malware.</p>
+                </div>
+            </div>
+
+            <h2>🎯 What Makes This Different from Typosquatting</h2>
+
+            <div class="grid">
+                <div class="card">
+                    <h4>Typosquatting</h4>
+                    <p>❌ Relies on human error<br>
+                    ❌ Random, unpredictable mistakes<br>
+                    ❌ Difficult to scale<br>
+                    ❌ Users may notice the typo</p>
+                </div>
+                <div class="card">
+                    <h4>Slopsquatting</h4>
+                    <p>✅ Exploits systematic AI behavior<br>
+                    ✅ <strong>43% repeatability</strong> across identical prompts<br>
+                    ✅ Infinitely scalable (query AI, register packages)<br>
+                    ✅ Packages sound legitimate</p>
+                </div>
+            </div>
+
+            <h2>📊 The Research That Started It All</h2>
+
+            <p>In June 2024, researchers from University of Texas at San Antonio, Virginia Tech, and University of Oklahoma published the first comprehensive analysis. They tested 16 different LLMs across two massive prompt datasets, generating <span class="highlight">576,000 code samples</span>.</p>
+
+            <div class="stat-box" style="background: linear-gradient(135deg, #48dbfb 0%, #0fb8ad 100%);">
+                <div class="stat-number">205,474</div>
+                <div class="stat-label">Unique hallucinated package names identified</div>
+            </div>
+
+            <p><strong>The critical finding:</strong> When researchers ran the same prompt 10 times through the same model, 43% of hallucinated packages appeared in <em>every single run</em>. This isn't random noise—it's predictable, exploitable behavior.</p>
+
+            <div class="code-block">
+                <code>
+# Example hallucinated packages that sound real:<br>
+pip install requests-async      # Sounds like aiohttp<br>
+pip install pandas-utils         # Pandas has no such package<br>
+pip install flask-validators     # Doesn't exist<br>
+npm install starlette-reverse-proxy  # Never existed<br>
+<br>
+# An attacker can register these TODAY and wait.
+                </code>
+            </div>
+
+            <h2>⏱️ Timeline: Six Months of Theoretical Threat</h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">June 2024</div>
+                    <p>UTSA research team publishes first comprehensive analysis on arXiv. The threat is documented but unnamed.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">April 12, 2025</div>
+                    <p><strong>Seth Michael Larson (Python Software Foundation) coins "slopsquatting"</strong> - combining "AI slop" with "typosquatting".</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">June 2025</div>
+                    <p>Trend Micro observes AI agent hallucinating "starlette-reverse-proxy" package (build failed, no attack occurred).</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">August 5, 2025</div>
+                    <p>Black Duck launches first commercial detection tool at Black Hat.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">September 8, 2025</div>
+                    <p>Major npm supply chain attack compromises chalk/debug (2B+ weekly downloads) - but <strong>NOT slopsquatting</strong>, traditional account compromise.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">October 21, 2025</div>
+                    <p>Zero confirmed slopsquatting attacks exist in the wild. The calm before the storm?</p>
+                </div>
+            </div>
+
+            <h2>🔍 The Detection Gap is Absolute</h2>
+
+            <p>Your security tools weren't built for this threat. Here's the brutal reality:</p>
+
+            <div class="interactive-box">
+                <h3>Security Tool Coverage (October 2025)</h3>
+                
+                <div class="tool-status">
+                    <div class="status-icon red">✗</div>
+                    <div>
+                        <strong>Snyk</strong> - Claims "unknown package" detection, but appears to be standard SCA, not slopsquatting-specific
+                    </div>
+                </div>
+
+                <div class="tool-status">
+                    <div class="status-icon red">✗</div>
+                    <div>
+                        <strong>Dependabot</strong> - Focuses on known CVEs only, no hallucination detection
+                    </div>
+                </div>
+
+                <div class="tool-status">
+                    <div class="status-icon red">✗</div>
+                    <div>
+                        <strong>WhiteSource/Mend</strong> - "Actively developing" detection (announced Aug 2025, not yet released)
+                    </div>
+                </div>
+
+                <div class="tool-status">
+                    <div class="status-icon red">✗</div>
+                    <div>
+                        <strong>Veracode</strong> - Published articles acknowledging threat, no detection announced
+                    </div>
+                </div>
+
+                <div class="tool-status">
+                    <div class="status-icon red">✗</div>
+                    <div>
+                        <strong>Checkmarx</strong> - Awareness phase only
+                    </div>
+                </div>
+
+                <div class="tool-status">
+                    <div class="status-icon green">✓</div>
+                    <div>
+                        <strong>Black Duck Assist</strong> - Released August 2025, integrates with Code Sight IDE plugin
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert-box">
+                <p><strong>What this means:</strong> If you're using Snyk, Dependabot, or Veracode as your primary dependency scanner, you have <span class="highlight">zero protection</span> against slopsquatting right now. Only one commercial tool currently offers detection.</p>
+            </div>
+
+            <h2>🛠️ Build Your Own Detection in 15 Minutes</h2>
+
+            <p>Since most security tools don't cover this yet, here's a lightweight scanner you can deploy today:</p>
+
+            <div class="code-block">
+                <code>
+# hallucination_detector.py<br>
+import requests<br>
+import sys<br>
+<br>
+def check_package_exists(package_name, ecosystem='pypi'):<br>
+    """Query registry API to verify package exists"""<br>
+    if ecosystem == 'pypi':<br>
+        url = f"https://pypi.org/pypi/{package_name}/json"<br>
+    else:  # npm<br>
+        url = f"https://registry.npmjs.org/{package_name}"<br>
+    <br>
+    try:<br>
+        response = requests.get(url, timeout=10)<br>
+        return response.status_code == 200<br>
+    except:<br>
+        return False<br>
+<br>
+def scan_requirements(file_path):<br>
+    """Scan requirements.txt for hallucinated packages"""<br>
+    with open(file_path) as f:<br>
+        packages = [line.split('==')[0].strip() <br>
+                   for line in f if line.strip() and not line.startswith('#')]<br>
+    <br>
+    hallucinated = []<br>
+    for pkg in packages:<br>
+        if not check_package_exists(pkg):<br>
+            hallucinated.append(pkg)<br>
+    <br>
+    return hallucinated<br>
+<br>
+# Usage in GitLab CI:<br>
+# python hallucination_detector.py requirements.txt
+                </code>
+            </div>
+
+
+
+            <div class="alert-box success" style="margin: 40px 0;">
+                <div class="alert-icon">🤔</div>
+                <div style="text-align: center;">
+                    <div class="stat-number" style="font-size: 4em; margin: 20px 0;">0</div>
+                    <p style="font-size: 1.3em; margin-bottom: 15px;"><strong>Confirmed slopsquatting attacks in the wild (as of Oct 21, 2025)</strong></p>
+                    <p>Despite 205,474 identified targets, 43% predictable repeatability, trivial exploitation, and six months since the threat was named... <span class="highlight">zero confirmed attacks exist</span>.</p>
+                    <p style="margin-top: 15px;">Security researchers can't decide if this means early disclosure worked, attackers are quietly registering packages and waiting, or the first campaign just hasn't been discovered yet.</p>
+                </div>
+            </div>
+
+            <h2>🎯 Why Zero Attacks? (And Why That Won't Last)</h2>
+
+            <div class="grid">
+                <div class="card">
+                    <h4>Current Protective Factors</h4>
+                    <p>✓ Early warning by researchers<br>
+                    ✓ PyPI/npm proactive monitoring<br>
+                    ✓ Security community awareness<br>
+                    ✓ Threat only named 6 months ago</p>
+                </div>
+                <div class="card">
+                    <h4>Why This Changes Soon</h4>
+                    <p>⚠️ 20M+ GitHub Copilot users<br>
+                    ⚠️ 50% of code AI-completed (Google)<br>
+                    ⚠️ Attack is trivially easy<br>
+                    ⚠️ 205K targets already identified</p>
+                </div>
+            </div>
+
+            <h2>✅ Your Action Plan (Next 48 Hours)</h2>
+
+            <div class="interactive-box">
+                <h3>Immediate Steps</h3>
+                <p><strong>Hour 1-2: Assess Exposure</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Survey which AI coding tools developers use</li>
+                    <li>Identify projects with AI-generated dependencies</li>
+                    <li>Calculate your risk using the calculator above</li>
+                </ul>
+
+                <p style="margin-top: 20px;"><strong>Hour 3-4: Deploy Detection</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Option A:</strong> Deploy the Python scanner above to CI/CD pipelines (15 min)</li>
+                    <li><strong>Option B:</strong> Evaluate Black Duck Assist if you're already a Synopsys customer</li>
+                    <li><strong>Option C:</strong> Build custom detection using the registry API pattern shown</li>
+                </ul>
+
+                <p style="margin-top: 20px;"><strong>Hour 5-8: Policy & Training</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Add "verify package exists on registry" to code review checklist</li>
+                    <li>Brief developers on slopsquatting mechanics</li>
+                    <li>Document approved AI coding assistant configurations</li>
+                </ul>
+            </div>
+
+            <h2>📖 The Deeper Technical Details</h2>
+
+            <p>Want the full research breakdown? Key findings from the validated studies:</p>
+
+            <div class="card">
+                <h4>Temperature Settings Matter</h4>
+                <p>Lowering LLM temperature from 1.0 to 0 (deterministic output) reduced hallucination rates by 30-40%. But this also reduced code creativity and diversity. The tradeoff: safer but more repetitive suggestions.</p>
+            </div>
+
+            <div class="card">
+                <h4>Three Categories of Hallucination</h4>
+                <p><strong>38%</strong> - Inspired by real packages (requests-async looks like aiohttp)<br>
+                <strong>13%</strong> - Typos/transpositions (character-level mistakes)<br>
+                <strong>51%</strong> - Pure fabrication (completely invented based on learned patterns)</p>
+            </div>
+
+            <div class="card">
+                <h4>Better Coders = Fewer Hallucinations</h4>
+                <p>January 2025 research found a strong inverse correlation (r = -0.80) between HumanEval coding scores and hallucination rates. Models that write better code also hallucinate fewer phantom packages.</p>
+            </div>
+
+            <h2>🔮 What Happens Next</h2>
+
+            <p>Six months is a long time in cybersecurity without exploitation. The fact that slopsquatting remains theoretical despite trivial execution suggests either:</p>
+
+            <ol style="margin-left: 20px; margin-top: 15px; line-height: 1.8;">
+                <li><strong>Security researchers successfully deterred attackers</strong> through early disclosure</li>
+                <li><strong>PyPI and npm's monitoring is working</strong> (for now)</li>
+                <li><strong>Attackers are playing the long game</strong> - registering packages quietly and waiting for organic adoption</li>
+                <li><strong>The first campaign is in progress</strong> and hasn't been discovered yet</li>
+            </ol>
+
+            <p style="margin-top: 20px;">The window for defensive action is open, but narrowing. With AI assisting in 50% of code completion, commercial models at 5.2% hallucination rate, and 205,474 identified phantom packages, the math is brutal:</p>
+
+            <div class="stat-box" style="background: linear-gradient(135deg, #f5576c 0%, #764ba2 100%);">
+                <div style="font-size: 1.5em; margin-bottom: 15px;">If every GitHub Copilot user (20M+) generates just 1 AI-suggested dependency per week:</div>
+                <div class="stat-number">1.04M</div>
+                <div class="stat-label">Hallucinated package opportunities per week for attackers</div>
+            </div>
+
+            <div class="alert-box success">
+                <div class="alert-icon">🛡️</div>
+                <p><strong>The good news:</strong> You now know about slopsquatting before your competitors do. Deploy detection today. Train your developers tomorrow. When the first confirmed attack hits the news, you'll already be protected.</p>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 40px 0;">
+
+            <p style="text-align: center; opacity: 0.7; font-size: 0.9em;">
+                Research validated October 21, 2025 | Sources: UTSA/VT/OU arXiv:2406.10279, IBM Cost of Data Breach 2024-2025, Black Duck, Wikipedia
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let selectedRate = 0;
+
+        function selectModel(model, rate) {
+            // Remove previous selection
+            document.querySelectorAll('.model-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selection to clicked card
+            event.currentTarget.classList.add('selected');
+            
+            selectedRate = rate;
+            calculateRisk();
+        }
+
+        function calculateRisk() {
+            if (selectedRate === 0) {
+                return; // No model selected yet
+            }
+
+            const weeklyDeps = parseInt(document.getElementById('weeklyDeps').value) || 50;
+            const phantomPackages = Math.round(weeklyDeps * (selectedRate / 100));
+            const riskPercent = selectedRate;
+
+            // Show result box
+            document.getElementById('riskResult').style.display = 'block';
+
+            // Animate progress bar
+            setTimeout(() => {
+                document.getElementById('riskBar').style.width = riskPercent + '%';
+                document.getElementById('riskPercent').textContent = riskPercent + '%';
+            }, 100);
+
+            document.getElementById('riskExplanation').innerHTML = 
+                `Out of <strong>${weeklyDeps}</strong> AI-suggested dependencies per week, approximately <strong>${phantomPackages}</strong> will be phantom packages that don't actually exist in registries.`;
+
+            document.getElementById('phantomCount').textContent = 
+                `~${phantomPackages} phantom packages`;
+        }
+
+        // Add some animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards and interactive boxes
+        document.querySelectorAll('.card, .interactive-box, .stat-box').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
