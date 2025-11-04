@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Production-grade credential validation engine for 100+ service providers">
+    <title>Credprobe - Credential Validation Engine</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
+            line-height: 1.6;
+            color: #000;
+            background: #fff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 2px solid #000;
+            padding: 40px 0;
+        }
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            line-height: 0.9;
+            margin-bottom: 20px;
+        }
+        .hero .tagline {
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            margin-bottom: 30px;
+            opacity: 0.7;
+        }
+        .hero .stats {
+            display: flex;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-block;
+            border: 2px solid #000;
+            background: #000;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .btn:hover {
+            background: #fff;
+            color: #000;
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #000;
+        }
+        .btn-secondary:hover {
+            background: #000;
+            color: #fff;
+        }
+        
+        /* Sections */
+        section {
+            padding: 80px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        section h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            margin-bottom: 30px;
+            letter-spacing: -0.02em;
+        }
+        section p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin-bottom: 20px;
+        }
+        
+        /* Code blocks */
+        pre {
+            background: #f5f5f5;
+            padding: 20px;
+            overflow-x: auto;
+            border-left: 4px solid #000;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+        code {
+            font-family: inherit;
+        }
+        
+        /* Features grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        .feature {
+            border: 2px solid #000;
+            padding: 25px;
+        }
+        .feature h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        /* Provider grid */
+        .provider-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 2px;
+            background: #000;
+            border: 2px solid #000;
+            margin: 30px 0;
+        }
+        .provider-item {
+            background: #fff;
+            padding: 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 60px;
+        }
+        
+        /* Use cases */
+        .use-case {
+            border-left: 4px solid #000;
+            padding-left: 20px;
+            margin: 30px 0;
+        }
+        .use-case h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        
+        /* Warning box */
+        .warning {
+            background: #000;
+            color: #fff;
+            padding: 30px;
+            margin: 40px 0;
+            border: 3px solid #000;
+        }
+        .warning strong {
+            display: block;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 60px 0;
+            text-align: center;
+            opacity: 0.6;
+        }
+        
+        /* Collapsible */
+        details {
+            margin: 30px 0;
+        }
+        details summary {
+            cursor: pointer;
+            padding: 15px;
+            background: #f5f5f5;
+            border: 2px solid #000;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        details summary:hover {
+            background: #000;
+            color: #fff;
+        }
+        details[open] summary {
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .provider-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <h1>CREDPROBE</h1>
+            <p class="tagline">Validate leaked credentials against 130+ service providers. Know if they're still active before attackers do.</p>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">130+</div>
+                    <div class="stat-label">Providers</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">889</div>
+                    <div class="stat-label">Test Cases</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">100ms</div>
+                    <div class="stat-label">Avg Validation</div>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <a href="https://github.com/aditya01933/credprobe" class="btn">View on GitHub</a>
+                <a href="https://rubygems.org/gems/credprobe" class="btn btn-secondary">Get the Gem</a>
+            </div>
+        </div>
+    </div>
+
+    <section>
+        <div class="container">
+            <h2>Why Credprobe?</h2>
+            <p>When credentials leak—from git repos, compromised databases, or phishing attacks—you need immediate answers: Is this credential still active? What access does it have? Which service is it for?</p>
+            <p>Credprobe validates credentials directly against provider APIs, giving you definitive answers in seconds.</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <h2>Features</h2>
+            <div class="features">
+                <div class="feature">
+                    <h3>Multi-Provider</h3>
+                    <p>130+ services including GitHub, AWS, Stripe, Slack, and every major API platform</p>
+                </div>
+                <div class="feature">
+                    <h3>Rate Limited</h3>
+                    <p>Built-in per-provider rate limiting prevents API abuse and bans</p>
+                </div>
+                <div class="feature">
+                    <h3>Extensible</h3>
+                    <p>Add new providers via YAML configs or Ruby validators in minutes</p>
+                </div>
+                <div class="feature">
+                    <h3>Rich Metadata</h3>
+                    <p>Returns user info, scopes, permissions, and access levels</p>
+                </div>
+                <div class="feature">
+                    <h3>Thread-Safe</h3>
+                    <p>Concurrent validation for high-throughput security operations</p>
+                </div>
+                <div class="feature">
+                    <h3>Production Ready</h3>
+                    <p>Zero dependencies beyond Faraday and Nokogiri</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background: #fafafa;">
+        <div class="container">
+            <h2>Quick Start</h2>
+            <pre><code>gem install credprobe</code></pre>
+            
+<pre><code>require 'credprobe'
+
+result = Credprobe.validate(
+  secret: 'ghp_1234567890abcdef',
+  provider: :github
+)
+
+if result[:active]
+  puts "⚠️  ACTIVE TOKEN"
+  puts "User: #{result[:metadata][:user]}"
+  puts "Scopes: #{result[:metadata][:scopes]}"
+else
+  puts "✅ Inactive"
+end</code></pre>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <h2>Use Cases</h2>
+            
+            <div class="use-case">
+                <h3>Security Incident Response</h3>
+                <p>When credentials leak from git history or databases, validate them immediately to understand your exposure and prioritize remediation.</p>
+            </div>
+            
+            <div class="use-case">
+                <h3>Automated Monitoring</h3>
+                <p>Scan repositories and codebases for exposed credentials, then automatically validate if they're active threats.</p>
+            </div>
+            
+            <div class="use-case">
+                <h3>Pre-commit Hooks</h3>
+                <p>Block commits containing active credentials before they enter version control.</p>
+            </div>
+            
+            <div class="use-case">
+                <h3>Credential Audits</h3>
+                <p>Verify which credentials in your inventory are still valid and what access they provide.</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <h2>Supported Providers</h2>
+            
+            <details>
+                <summary>View all 130+ providers</summary>
+                <div class="provider-grid">
+                    <div class="provider-item">Adobe</div>
+                    <div class="provider-item">Adyen</div>
+                    <div class="provider-item">Airtable</div>
+                    <div class="provider-item">Airtable API</div>
+                    <div class="provider-item">Aiven</div>
+                    <div class="provider-item">Algolia</div>
+                    <div class="provider-item">Alibaba Cloud</div>
+                    <div class="provider-item">Amplitude</div>
+                    <div class="provider-item">Anthropic</div>
+                    <div class="provider-item">Asana</div>
+                    <div class="provider-item">Auth0</div>
+                    <div class="provider-item">AWS</div>
+                    <div class="provider-item">Azure</div>
+                    <div class="provider-item">Azure DevOps</div>
+                    <div class="provider-item">Basecamp</div>
+                    <div class="provider-item">Binance</div>
+                    <div class="provider-item">Bitbucket</div>
+                    <div class="provider-item">Box</div>
+                    <div class="provider-item">Braintree</div>
+                    <div class="provider-item">BrowserStack</div>
+                    <div class="provider-item">Bugsnag</div>
+                    <div class="provider-item">Buildkite</div>
+                    <div class="provider-item">CircleCI</div>
+                    <div class="provider-item">ClickUp</div>
+                    <div class="provider-item">Clojars</div>
+                    <div class="provider-item">Cloudflare</div>
+                    <div class="provider-item">Coinbase</div>
+                    <div class="provider-item">Confluence</div>
+                    <div class="provider-item">Contentful</div>
+                    <div class="provider-item">Databricks</div>
+                    <div class="provider-item">Datadog</div>
+                    <div class="provider-item">DigitalOcean</div>
+                    <div class="provider-item">Discord</div>
+                    <div class="provider-item">Docker Hub</div>
+                    <div class="provider-item">Doppler</div>
+                    <div class="provider-item">Drone</div>
+                    <div class="provider-item">Dropbox</div>
+                    <div class="provider-item">Dynatrace</div>
+                    <div class="provider-item">EasyPost</div>
+                    <div class="provider-item">Elasticsearch</div>
+                    <div class="provider-item">Facebook</div>
+                    <div class="provider-item">Fastly</div>
+                    <div class="provider-item">Figma</div>
+                    <div class="provider-item">Firebase</div>
+                    <div class="provider-item">Flutterwave</div>
+                    <div class="provider-item">Frame.io</div>
+                    <div class="provider-item">Freshdesk</div>
+                    <div class="provider-item">GCP</div>
+                    <div class="provider-item">GitHub</div>
+                    <div class="provider-item">GitHub Actions</div>
+                    <div class="provider-item">GitLab</div>
+                    <div class="provider-item">Google Drive</div>
+                    <div class="provider-item">Grafana</div>
+                    <div class="provider-item">HashiCorp</div>
+                    <div class="provider-item">Heroku</div>
+                    <div class="provider-item">Highnote</div>
+                    <div class="provider-item">HubSpot</div>
+                    <div class="provider-item">Hugging Face</div>
+                    <div class="provider-item">Instagram</div>
+                    <div class="provider-item">Intercom</div>
+                    <div class="provider-item">Ionic</div>
+                    <div class="provider-item">Jenkins</div>
+                    <div class="provider-item">JFrog</div>
+                    <div class="provider-item">Jira</div>
+                    <div class="provider-item">Kubernetes</div>
+                    <div class="provider-item">LangChain</div>
+                    <div class="provider-item">LaunchDarkly</div>
+                    <div class="provider-item">Linear</div>
+                    <div class="provider-item">LinkedIn</div>
+                    <div class="provider-item">Linode</div>
+                    <div class="provider-item">Lob</div>
+                    <div class="provider-item">Mailchimp</div>
+                    <div class="provider-item">Mailgun</div>
+                    <div class="provider-item">Mattermost</div>
+                    <div class="provider-item">MaxMind</div>
+                    <div class="provider-item">MessageBird</div>
+                    <div class="provider-item">Microsoft Teams</div>
+                    <div class="provider-item">Mixpanel</div>
+                    <div class="provider-item">Monday</div>
+                    <div class="provider-item">MongoDB</div>
+                    <div class="provider-item">Netlify</div>
+                    <div class="provider-item">New Relic</div>
+                    <div class="provider-item">Notion</div>
+                    <div class="provider-item">npm</div>
+                    <div class="provider-item">Okta</div>
+                    <div class="provider-item">Onfido</div>
+                    <div class="provider-item">OpenAI</div>
+                    <div class="provider-item">PagerDuty</div>
+                    <div class="provider-item">PayPal</div>
+                    <div class="provider-item">Pinterest</div>
+                    <div class="provider-item">Plaid</div>
+                    <div class="provider-item">PlanetScale</div>
+                    <div class="provider-item">PostHog</div>
+                    <div class="provider-item">Postman</div>
+                    <div class="provider-item">Postmark</div>
+                    <div class="provider-item">Pulumi</div>
+                    <div class="provider-item">Pusher</div>
+                    <div class="provider-item">PyPI</div>
+                    <div class="provider-item">Razorpay</div>
+                    <div class="provider-item">Reddit</div>
+                    <div class="provider-item">Redis</div>
+                    <div class="provider-item">Rocket.Chat</div>
+                    <div class="provider-item">Rollbar</div>
+                    <div class="provider-item">Salesforce</div>
+                    <div class="provider-item">Sanity</div>
+                    <div class="provider-item">Sauce Labs</div>
+                    <div class="provider-item">Segment</div>
+                    <div class="provider-item">SendGrid</div>
+                    <div class="provider-item">Sendinblue</div>
+                    <div class="provider-item">Sentry</div>
+                    <div class="provider-item">Shippo</div>
+                    <div class="provider-item">Shopify</div>
+                    <div class="provider-item">Slack</div>
+                    <div class="provider-item">SonarCloud</div>
+                    <div class="provider-item">SonarQube</div>
+                    <div class="provider-item">SparkPost</div>
+                    <div class="provider-item">Splunk</div>
+                    <div class="provider-item">Square</div>
+                    <div class="provider-item">Stripe</div>
+                    <div class="provider-item">Supabase</div>
+                    <div class="provider-item">Tailscale</div>
+                    <div class="provider-item">TeamCity</div>
+                    <div class="provider-item">Telegram</div>
+                    <div class="provider-item">TikTok</div>
+                    <div class="provider-item">Todoist</div>
+                    <div class="provider-item">Travis CI</div>
+                    <div class="provider-item">Trello</div>
+                    <div class="provider-item">Twilio</div>
+                    <div class="provider-item">Twitch</div>
+                    <div class="provider-item">Twitter</div>
+                    <div class="provider-item">Typeform</div>
+                    <div class="provider-item">Vercel</div>
+                    <div class="provider-item">Vonage</div>
+                    <div class="provider-item">Vultr</div>
+                    <div class="provider-item">WhatsApp</div>
+                    <div class="provider-item">WooCommerce</div>
+                    <div class="provider-item">YouTube</div>
+                    <div class="provider-item">Zendesk</div>
+                    <div class="provider-item">Zoom</div>
+                </div>
+            </details>
+        </div>
+    </section>
+
+    <section style="background: #fafafa;">
+        <div class="container">
+            <h2>YAML DSL</h2>
+            <p>Define new validators without writing Ruby code. Drop a YAML file in <code>config/providers/</code> and it auto-loads.</p>
+            
+            <details>
+                <summary>View YAML DSL documentation</summary>
+                
+                <h3 style="margin-top: 30px; font-size: 1.4rem;">Basic Structure</h3>
+<pre><code>url: https://api.example.com/validate
+method: POST
+timeout: 10
+
+headers:
+  Authorization: "Bearer {{secret}}"
+
+response_mapping:
+  - status: 200
+    body_type: json
+    body_contains:
+      - json_path: "authenticated"
+        equals: true
+    result: active
+  
+  - status: 401
+    result: inactive
+
+rate_limit:
+  requests: 100
+  window: 3600</code></pre>
+
+                <h3 style="margin-top: 30px; font-size: 1.4rem;">Template Variables</h3>
+                <p>Use <code>{{secret}}</code> and <code>{{metadata.key}}</code> anywhere in URLs, headers, or request bodies.</p>
+
+                <h3 style="margin-top: 30px; font-size: 1.4rem;">Body Conditions</h3>
+<pre><code>body_contains:
+  - contains: "success"              # String search
+  - json_path: "data.user.active"    # JSON path
+    equals: true
+  - json_path: "errors[0].code"      # Array access
+  - regex: "error.*rate.?limit"      # Regex match
+  - xpath: "//Error/Code"            # XML XPath
+    equals: "AccessDenied"</code></pre>
+
+                <h3 style="margin-top: 30px; font-size: 1.4rem;">Status Matching</h3>
+<pre><code>response_mapping:
+  - status: 200              # Exact match
+  - status: "400-499"        # Range match
+  - status: [401, 403]       # Multiple values</code></pre>
+            </details>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="warning">
+                <strong>⚠️ Security Notice</strong>
+                <p>Credprobe makes real API calls to validate credentials. Use in secure environments only. Some providers may log validation attempts. Logs are automatically sanitized but consider using dedicated validator accounts where possible.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>MIT Licensed • Built for security teams • <a href="https://github.com/aditya01933/credprobe">github.com/aditya01933/credprobe</a></p>
+        </div>
+    </footer>
+</body>
+</html>
